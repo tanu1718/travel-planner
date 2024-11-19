@@ -19,7 +19,7 @@ with st.sidebar:
 if selected_page == "Manual & AI Assisted Editting":
     st.title("First Lab")
     # Execute the Lab1.py code
-    exec(open("Lab1.py").read())  # This will run the content of Lab1.py
+    exec(open("page1.py").read())  # This will run the content of Lab1.py
 
 elif selected_page == "Second Lab":
     st.title("Second Lab")
