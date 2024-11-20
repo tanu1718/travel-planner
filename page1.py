@@ -1,4 +1,5 @@
 import streamlit as st
+import requests
 
 # Sidebar for filters
 st.sidebar.title("Filters")
@@ -6,7 +7,7 @@ st.sidebar.title("Filters")
 # Price range slider
 price_range = st.sidebar.slider("Price Range", 20, 120, (20, 120), step=10)
 
-# Display price range in a styled format (like in the image)
+# Display price range in a styled format
 st.sidebar.markdown(f"<h4 style='text-align: right;'>${price_range[0]}-${price_range[1]}</h4>", unsafe_allow_html=True)
 
 # Category selection buttons (using columns for layout)
@@ -25,7 +26,7 @@ with col3:
     history = st.button("🏛️ History")
     parks = st.button("🌲 Parks")
 
-# Activity selection buttons (Nightlife, Shopping, Sightseeing)
+# Activity selection buttons
 st.sidebar.markdown("### Activities")
 col4, col5, col6 = st.sidebar.columns(3)
 
@@ -82,3 +83,40 @@ if selected_categories or selected_activities:
         st.markdown(f"📌 {step}")
 else:
     st.write("Please select at least one category or activity to generate an itinerary.")
+# Placeholder for API integration
+st.write("Fetching places based on your selection...")
+
+# Function to fetch data from TripAdvisor API
+def fetch_places_from_tripadvisor(categories, activities, price_range, api_key):
+    base_url = "https://api.tripadvisor.com/v2/places"
+    headers = {"Authorization": f"Bearer {api_key}"}
+    
+    # Construct parameters for the request
+    params = {
+        "categories": ','.join(categories),
+        "activities": ','.join(activities),
+        "price_min": price_range[0],
+        "price_max": price_range[1],
+        "location": "San Francisco"  # Change to dynamic location based on user input
+    }
+    
+    try:
+        response = requests.get(base_url, headers=headers, params=params)
+        if response.status_code == 200:
+            return response.json()
+        else:
+            return {"error": f"API error {response.status_code}: {response.text}"}
+    except Exception as e:
+        return {"error": str(e)}
+
+# Call the function to fetch data from the TripAdvisor API
+tripadvisor_api_key = "971E6EAC0EAD43D8BB1E1EE2AE713CAD"
+places_tripadvisor = fetch_places_from_tripadvisor(selected_categories, selected_activities, price_range, tripadvisor_api_key)
+
+# Display fetched places
+if "error" in places_tripadvisor:
+    st.write(f"Error fetching data: {places_tripadvisor['error']}")
+else:
+    st.write("Places from TripAdvisor:")
+    for place in places_tripadvisor.get("data", []):
+        st.write(f"**{place.get('name')}** - {place.get('description', 'No description available')}")
