@@ -80,9 +80,9 @@ def fetch_places_from_tripadvisor(location, api_key):
         return {"error": str(e)}
 
 # Call the Tripadvisor API
-tripadvisor_api_key = "YOUR_API_KEY"  # Replace with your actual API key
+trip_advisor = "YOUR_API_KEY"  # Replace with your actual API key
 location_query = "San Francisco"  # You can replace this with a dynamic input
-places_tripadvisor = fetch_places_from_tripadvisor(location_query, tripadvisor_api_key)
+places_tripadvisor = fetch_places_from_tripadvisor(location_query, trip_advisor)
 
 # Display fetched places
 st.write("Fetching places from Tripadvisor...")
