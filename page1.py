@@ -57,14 +57,21 @@ st.write(f"Selected Price Range: ${price_range[0]} - ${price_range[1]}")
 st.write(f"Selected Categories: {', '.join(selected_categories)}")
 st.write(f"Selected Activities: {', '.join(selected_activities)}")
 
-# Function to fetch data from TripAdvisor API
+# Function to fetch data from Tripadvisor API
 def fetch_places_from_tripadvisor(location, api_key):
-    url = "https://api.tripadvisor.com/api/v1/locations"
-    headers = {"Authorization": f"Bearer {api_key}"}
-    params = {"query": location}
+    base_url = "https://api.content.tripadvisor.com/api/v1/location/search"
+    params = {
+        "key": api_key,
+        "searchQuery": location,
+        "category": ','.join(selected_categories) if selected_categories else None,
+        "price": f"{price_range[0]}-{price_range[1]}" if price_range else None,
+        "limit": 10  # Number of results to return
+    }
+    # Remove None values from params
+    params = {k: v for k, v in params.items() if v is not None}
 
     try:
-        response = requests.get(url, headers=headers, params=params)
+        response = requests.get(base_url, params=params)
         if response.status_code == 200:
             return response.json()
         else:
@@ -72,22 +79,25 @@ def fetch_places_from_tripadvisor(location, api_key):
     except Exception as e:
         return {"error": str(e)}
 
-# Call the TripAdvisor API
-tripadvisor_api_key = "971E6EAC0EAD43D8BB1E1EE2AE713CAD"
+# Call the Tripadvisor API
+tripadvisor_api_key = "YOUR_API_KEY"  # Replace with your actual API key
 location_query = "San Francisco"  # You can replace this with a dynamic input
 places_tripadvisor = fetch_places_from_tripadvisor(location_query, tripadvisor_api_key)
 
 # Display fetched places
-st.write("Fetching places from TripAdvisor...")
+st.write("Fetching places from Tripadvisor...")
 
 if "error" in places_tripadvisor:
     st.write(f"Error fetching data: {places_tripadvisor['error']}")
 else:
-    st.write("Places from TripAdvisor:")
+    st.write("Places from Tripadvisor:")
     locations = places_tripadvisor.get("data", [])
     if locations:
         for place in locations:
-            st.write(f"**{place.get('name', 'No Name')}** - {place.get('description', 'No description available')}")
+            st.write(f"**{place.get('name', 'No Name')}**")
             st.write(f"📍 Address: {place.get('address', 'No address available')}")
+            st.write(f"💵 Price Level: {place.get('price_level', 'N/A')}")
+            st.write(f"🌟 Rating: {place.get('rating', 'N/A')}")
+            st.write("---")
     else:
         st.write("No places found for the selected location.")
