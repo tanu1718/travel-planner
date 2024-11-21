@@ -1,15 +1,14 @@
 import streamlit as st
 from chromadb_utils import get_chromadb_client
 
+# Initialize ChromaDB client
 client = get_chromadb_client()
 
-
-# Define a collection for user data
+# Create or get the users collection
 user_collection = client.get_or_create_collection(
     name="users",
     metadata={"email": "string", "name": "string"}
 )
-
 
 def login_page():
     st.title("Login")
@@ -20,18 +19,29 @@ def login_page():
 
     if st.button("Continue with Google"):
         if email:
-            # Check if user already exists using a filter query
-            user_data = user_collection.get(where={"email": email})  # Use 'where' to query by email
-            if not user_data:
-                # If new user, create an entry
-                user_collection.add(ids=[email],  # Use the email as the unique ID
-                                    documents=[{"email": email, "name": email.split("@")[0]}])
-            st.session_state["user"] = email
-            st.success(f"Welcome, {email.split('@')[0]}!")
-            return True
+            try:
+                # Check if the user already exists
+                user_data = user_collection.get(where={"email": email})  # Query using 'where'
+                if len(user_data["ids"]) == 0:  # No existing user
+                    # Add new user
+                    user_collection.add(
+                        ids=[email],  # Use email as the unique ID
+                        documents=[{"email": email, "name": email.split("@")[0]}]
+                    )
+                    st.info("New user added to the database.")
+                else:
+                    st.info("Welcome back! You are already in the database.")
+
+                # Save the user session
+                st.session_state["user"] = email
+                st.success(f"Welcome, {email.split('@')[0]}!")
+                return True
+            except Exception as e:
+                st.error(f"Error during login: {e}")
         else:
             st.error("Please enter a valid email.")
     return False
+
 
 def get_user():
     return st.session_state.get("user", None)

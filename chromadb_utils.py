@@ -7,13 +7,14 @@ import chromadb
 from chromadb.config import Settings
 import os
 
-# Initialize and return a Chromadb Client
+# Initialize and return a ChromaDB client
 def get_chromadb_client():
-    # Define the persistence directory
+    # Specify the persistence directory
     persist_directory = os.path.join(os.getcwd(), "chroma_db")  # Persistent directory for ChromaDB
 
-    # Create and return the ChromaDB client
-    return chromadb.Client(Settings(
-        chroma_db_impl="duckdb+parquet",  # Default implementation
-        persist_directory=persist_directory  # Set to None for in-memory database
+    # Use the updated client initialization
+    client = chromadb.Client(Settings(
+        chroma_api_impl="local",          # Specify local API implementation
+        persist_directory=persist_directory  # Directory for data persistence
     ))
+    return client
