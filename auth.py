@@ -9,17 +9,19 @@ user_collection = client.get_or_create_collection("users")
 
 def login_page():
     st.title("Login")
-    st.write("Login using your Google account.")
+    st.write("Please log in using your email (mock Google OAuth).")
 
-    # Mock Google login with a simple input
-    email = st.text_input("Enter your email (mock Google OAuth):", key="email_input")
+    # Mock Google login with a text input
+    email = st.text_input("Enter your email (e.g., johndoe@gmail.com):", key="email_input")
+
     if st.button("Continue with Google"):
         if email:
-            # Check if user already exists
-            user_data = user_collection.get({"email": email})
+            # Check if user already exists using a filter query
+            user_data = user_collection.get(where={"email": email})  # Use 'where' to query by email
             if not user_data:
                 # If new user, create an entry
-                user_collection.insert({"email": email, "name": email.split("@")[0]})
+                user_collection.add(ids=[email],  # Use the email as the unique ID
+                                    documents=[{"email": email, "name": email.split("@")[0]}])
             st.session_state["user"] = email
             st.success(f"Welcome, {email.split('@')[0]}!")
             return True
