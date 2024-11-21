@@ -2,3 +2,4 @@ streamlit
 requests
 streamlit_option_menu
 chromadb
+pysqlite3
