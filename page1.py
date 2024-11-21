@@ -57,9 +57,12 @@ st.write(f"Selected Price Range: ${price_range[0]} - ${price_range[1]}")
 st.write(f"Selected Categories: {', '.join(selected_categories)}")
 st.write(f"Selected Activities: {', '.join(selected_activities)}")
 
-# Function to fetch data from Tripadvisor API
+# Function to fetch data from Tripadvisor API with Referer header
 def fetch_places_from_tripadvisor(location, api_key):
     base_url = "https://api.content.tripadvisor.com/api/v1/location/search"
+    headers = {
+        "Referer": "https://travel-partner.streamlit.app",  # Update as per the requirement in the image
+    }
     params = {
         "key": api_key,
         "searchQuery": location,
@@ -71,7 +74,7 @@ def fetch_places_from_tripadvisor(location, api_key):
     params = {k: v for k, v in params.items() if v is not None}
 
     try:
-        response = requests.get(base_url, params=params)
+        response = requests.get(base_url, headers=headers, params=params)
         if response.status_code == 200:
             return response.json()
         else:
