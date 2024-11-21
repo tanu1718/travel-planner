@@ -5,7 +5,11 @@ client = get_chromadb_client()
 
 
 # Define a collection for user data
-user_collection = client.get_or_create_collection("users")
+user_collection = client.get_or_create_collection(
+    name="users",
+    metadata={"email": "string", "name": "string"}
+)
+
 
 def login_page():
     st.title("Login")
