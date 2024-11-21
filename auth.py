@@ -1,8 +1,8 @@
 import streamlit as st
-import chromadb
+from chromadb_utils import get_chromadb_client
 
-# Initialize Chromadb Client
-client = chromadb.Client()
+client = get_chromadb_client()
+
 
 # Define a collection for user data
 user_collection = client.get_or_create_collection("users")
