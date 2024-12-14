@@ -1,42 +1,38 @@
 import streamlit as st
-# from streamlit_option_menu import option_menu
-from auth import login_page, get_user
+from streamlit_option_menu import option_menu
 
-# Set up a sidebar or navigation for different pages
-st.set_page_config(page_title="Multi-Page App", layout="wide")
+# Set up the main page configuration
+st.set_page_config(page_title="Interactive Travel Guide Chatbot", page_icon="🌎", layout="wide")
 
-# Check for authentication
-if "user" not in st.session_state:
-    is_authenticated = login_page()  # Render login page
-    if not is_authenticated:
-        st.stop()  # Stop the app until the user logs in
+# Define navigation with a single active page
+with st.sidebar:
+    selected_page = option_menu(
+        "Pre College Bot",
+        ["Final Testing Bot"],  # Only one option
+        icons=['beaker'],  # Single icon
+        menu_icon="cast",
+        default_index=0,  # Default to this page
+    )
 
-# User is authenticated
-user_email = get_user()
-st.sidebar.title(f"Welcome, {user_email.split('@')[0]}")
+# Only the "Final Testing Bot" is active
+if selected_page == "Final Testing Bot":
+    st.title("Syracuse University Office of Pre-College Programs")
+    # Execute the cps5.py code
+    exec(open("cps5.py").read())  # This will run the content of cps5.py
 
-# Define navigation using a simple option menu
-# with st.sidebar:
-#     selected_page = option_menu(
-#         "Select Lab",
-#         ["Manual & AI Assisted Editting", "Second Lab", "Third Lab", "Fourth Lab", "Fifth Lab"],
-#         icons=['book', 'book', 'book', 'book', 'book'],
-#         menu_icon="cast", 
-#         default_index=0,
-#     )
+# Commented out all other pages
+# elif selected_page == "Test Bot":
+#     st.title("SU Office of Pre-College Programs")
+#     exec(open("cps1.py").read())  # Run cps1.py
 
-# Load the appropriate page based on the user's selection
-# if selected_page == "Manual & AI Assisted Editting":
-#     st.title("First Lab")
-#     # Execute the page1.py code
-#     exec(open("page1.py").read())  # This will run the content of page1.py
+# elif selected_page == "Pre-College Bot":
+#     st.title("Syracuse University Office of Pre-College Programs")
+#     exec(open("cps2.py").read())  # Run cps2.py
 
-# elif selected_page == "Second Lab":
-#     st.title("Second Lab")
-#     # Execute the Lab2.py code
-#     exec(open("Lab2.py").read())  # This will run the content of Lab2.py
+# elif selected_page == "Smart Pre-College Bot":
+#     st.title("Syracuse University Office of Pre-College Programs")
+#     exec(open("cps3.py").read())  # Run cps3.py
 
-# elif selected_page == "Third Lab":
-#     st.title("Third Lab")
-#     # Execute the Lab3.py code
-#     exec(open("Lab3.py").read())  # This will run the content of Lab3.py
+# elif selected_page == "SRC Pre-College Bot":
+#     st.title("Syracuse University Office of Pre-College Programs")
+#     exec(open("cps4.py").read())  # Run cps4.py
